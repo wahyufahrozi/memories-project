@@ -3,17 +3,21 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import mongoose from "mongoose";
 import postRoutes from "./routes/posts.js";
+import userRoutes from "./routes/users.js";
 import logger from "morgan";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 const app = express();
+
 app.use(cors());
 dotenv.config();
 app.use(logger("dev"));
 app.use(cookieParser());
 app.use(bodyParser.json({ limit: "30mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
+
 app.use("/posts", postRoutes);
+app.use("/user", userRoutes);
 
 // const CONNECTION_URL =
 //   "mongodb+srv://admin:admin@cluster0.zfdny.mongodb.net/memories?retryWrites=true&w=majority";
