@@ -6,10 +6,21 @@ import PostMessage from "../models/postMessage.js";
 const router = express.Router();
 
 export const getPosts = async (req, res) => {
+  const { page } = req.query;
   try {
-    const postMessages = await PostMessage.find();
+    const LIMIT = 8;
+    const startIndex = (Number(page) - 1) * LIMIT; //mendapatkan start index pada tiap page
+    const total = await PostMessage.countDocuments({});
+    const posts = await PostMessage.find()
+      .sort({ id: -1 })
+      .limit(LIMIT)
+      .skip(startIndex);
 
-    res.status(200).json(postMessages);
+    res.status(200).json({
+      data: posts,
+      currentPage: Number(page),
+      numberOfPages: Math.ceil(total / LIMIT),
+    });
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
@@ -27,6 +38,21 @@ export const getPost = async (req, res) => {
   }
 };
 
+export const getPostsBySearch = async (req, res) => {
+  const { searchQuery, tags } = req.query;
+  try {
+    const title = new RegExp(searchQuery, "i"); //'i' digunakan supaya tidak case sensitive
+
+    const post = await PostMessage.find({
+      $or: [{ title }, { tags: { $in: tags.split(",") } }],
+      // $or: dikarenakan pencarian lebih dari satu maka digunakan syntax or
+      // $in: tags.split(",") : apakah tags didalam array sama dengan tag pada query
+    });
+    res.json({ data: post });
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+};
 export const createPost = async (req, res) => {
   const post = req.body;
   // console.log("asda", req.userId);

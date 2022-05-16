@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { AppBar, Avatar, Button, Toolbar, Typography } from "@material-ui/core";
-import memories from "../../assets/images/memories-Logo.png";
+import memoriesLogo from "../../assets/images/memories-Logo.png";
+import memoriesText from "../../assets/images/memoriesText.png";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import useStyles from "./styles";
 import { useDispatch } from "react-redux";
@@ -28,26 +29,26 @@ const Navbar = () => {
       if (decodeToken.exp * 1000 < new Date().getTime()) logout();
     }
   }, [location]);
-
+  const getFirstWord = (str) => {
+    let spaceIndex = str.indexOf(" ");
+    return spaceIndex === -1 ? str : str.substr(0, spaceIndex);
+  };
   return (
     <AppBar className={classes.appBar} position="static" color="inherit">
-      <div className={classes.brandContainer}>
-        <Typography
-          className={classes.heading}
-          component={Link}
-          to="/"
-          variant="h2"
-          align="center"
-        >
-          Memories
-        </Typography>
+      <Link to="/" className={classes.brandContainer}>
         <img
           className={classes.image}
-          src={memories}
+          src={memoriesText}
           alt="memories"
-          height="60"
+          height="45"
         />
-      </div>
+        <img
+          className={classes.image}
+          src={memoriesLogo}
+          alt="memories"
+          height="40"
+        />
+      </Link>
       <Toolbar className={classes.toolbar}>
         {user ? (
           <div className={classes.profile}>
@@ -59,7 +60,7 @@ const Navbar = () => {
               {user.result.name.charAt(0)}
             </Avatar>
             <Typography className={classes.userName} variant="h6">
-              {user.result.name}
+              {getFirstWord(user.result.name)}
             </Typography>
             <Button
               variant="contained"
