@@ -19,6 +19,9 @@ app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
 app.use("/posts", postRoutes);
 app.use("/user", userRoutes);
 
+app.get("/", (req, res) => {
+  res.send("APP IS RUNNG");
+});
 // const CONNECTION_URL =
 //   "mongodb+srv://admin:admin@cluster0.zfdny.mongodb.net/memories?retryWrites=true&w=majority";
 const PORT = process.env.PORT || 8080;

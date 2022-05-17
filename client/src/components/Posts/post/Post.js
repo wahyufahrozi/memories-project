@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Card,
   CardActions,
@@ -13,32 +13,44 @@ import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import ThumbUpAltOutlined from "@material-ui/icons/ThumbUpAltOutlined";
 import { useDispatch } from "react-redux";
 import moment from "moment";
-
+import { useHistory } from "react-router-dom";
 import { likePost, deletePost } from "../../../redux/actions/posts";
-
+import { Link } from "react-router-dom";
 import useStyles from "./styles";
 
 const Post = ({ post, setCurrentId }) => {
   const dispatch = useDispatch();
   const classes = useStyles();
   const user = JSON.parse(localStorage.getItem("profile"));
+  // const history = useHistory();
+  const [likes, setLikes] = useState(post?.likes);
+  const userId = user?.result.googleId || user?.result?._id;
+  const hasLikedPost = post.likes.find((like) => like === userId);
+
+  const handleLike = async () => {
+    dispatch(likePost(post._id));
+
+    if (hasLikedPost) {
+      setLikes(post.likes.filter((id) => id !== userId));
+    } else {
+      setLikes([...post.likes, userId]);
+    }
+  };
 
   const Likes = () => {
-    if (post.likes.length > 0) {
-      return post.likes.find(
-        (like) => like === (user?.result?.googleId || user?.result?._id)
-      ) ? (
+    if (likes.length > 0) {
+      return likes.find((like) => like === userId) ? (
         <>
           <ThumbUpAltIcon fontSize="small" />
           &nbsp;
-          {post.likes.length > 2
-            ? `You and ${post.likes.length - 1} others`
-            : `${post.likes.length} like${post.likes.length > 1 ? "s" : ""}`}
+          {likes.length > 2
+            ? `You and ${likes.length - 1} others`
+            : `${likes.length} like${likes.length > 1 ? "s" : ""}`}
         </>
       ) : (
         <>
           <ThumbUpAltOutlined fontSize="small" />
-          &nbsp;{post.likes.length} {post.likes.length === 1 ? "Like" : "Likes"}
+          &nbsp;{likes.length} {likes.length === 1 ? "Like" : "Likes"}
         </>
       );
     }
@@ -51,8 +63,17 @@ const Post = ({ post, setCurrentId }) => {
     );
   };
 
+  // const openPost = () => {
+  //   history.push(`/posts/${post._id}`);
+  // };
   return (
     <Card className={classes.card} raised elevation={6}>
+      {/* <ButtonBase
+        component="span"
+        name="test"
+        className={classes.cardAction}
+        onClick={openPost}
+      > */}
       <CardMedia
         className={classes.media}
         image={
@@ -79,30 +100,33 @@ const Post = ({ post, setCurrentId }) => {
           </Button>
         </div>
       )}
-      <div className={classes.details}>
-        <Typography variant="body2" color="textSecondary" component="h2">
-          {post.tags.map((tag) => `#${tag} `)}
+      <Link to={`/posts/${post._id}`} style={{ textDecoration: "none" }}>
+        <div className={classes.details}>
+          <Typography variant="body2" color="textSecondary" component="h2">
+            {post.tags.map((tag) => `#${tag} `)}
+          </Typography>
+        </div>
+        <Typography
+          className={classes.title}
+          gutterBottom
+          variant="h5"
+          component="h2"
+        >
+          {post.title}
         </Typography>
-      </div>
-      <Typography
-        className={classes.title}
-        gutterBottom
-        variant="h5"
-        component="h2"
-      >
-        {post.title}
-      </Typography>
-      <CardContent>
-        <Typography variant="body2" color="textSecondary" component="p">
-          {post.message}
-        </Typography>
-      </CardContent>
+        <CardContent>
+          <Typography variant="body2" color="textSecondary" component="p">
+            {post.message}
+          </Typography>
+        </CardContent>
+      </Link>
+      {/* </ButtonBase> */}
       <CardActions className={classes.cardActions}>
         <Button
           size="small"
           color="primary"
           disabled={!user?.result}
-          onClick={() => dispatch(likePost(post._id))}
+          onClick={handleLike}
         >
           <Likes />
         </Button>

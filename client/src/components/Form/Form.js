@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import FileBase from "react-file-base64";
 
 import { createPost, updatePost, getPosts } from "../../redux/actions/posts";
-
+import { useHistory } from "react-router-dom";
 import useStyles from "./styles";
 
 const Form = ({ currentId, setCurrentId }) => {
@@ -15,12 +15,14 @@ const Form = ({ currentId, setCurrentId }) => {
     selectedFile: "",
   });
   const post = useSelector((state) =>
-    currentId ? state.posts.find((message) => message._id === currentId) : null
+    currentId
+      ? state.posts.posts.find((message) => message._id === currentId)
+      : null
   );
   const dispatch = useDispatch();
   const classes = useStyles();
   const user = JSON.parse(localStorage.getItem("profile"));
-
+  const history = useHistory();
   useEffect(() => {
     if (post) setPostData(post);
   }, [post]);
@@ -34,12 +36,15 @@ const Form = ({ currentId, setCurrentId }) => {
     e.preventDefault();
 
     if (currentId === null) {
-      dispatch(createPost({ ...postData, name: user?.result?.name }));
+      dispatch(createPost({ ...postData, name: user?.result?.name }, history));
+
       clear();
     } else {
       dispatch(
         updatePost(currentId, { ...postData, name: user?.result?.name })
       );
+      history.push(`/posts`);
+
       clear();
     }
   };

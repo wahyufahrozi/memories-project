@@ -29,10 +29,10 @@ const Navbar = () => {
       if (decodeToken.exp * 1000 < new Date().getTime()) logout();
     }
   }, [location]);
-  const getFirstWord = (str) => {
-    let spaceIndex = str.indexOf(" ");
-    return spaceIndex === -1 ? str : str.substr(0, spaceIndex);
-  };
+  // const getFirstWord = (str) => {
+  //   let spaceIndex = str.indexOf(" ");
+  //   return spaceIndex === -1 ? str : str.substr(0, spaceIndex);
+  // };
   return (
     <AppBar className={classes.appBar} position="static" color="inherit">
       <Link to="/" className={classes.brandContainer}>
@@ -60,7 +60,8 @@ const Navbar = () => {
               {user.result.name.charAt(0)}
             </Avatar>
             <Typography className={classes.userName} variant="h6">
-              {getFirstWord(user.result.name)}
+              {user.result.name.split(" ")[0]}
+              {/* {getFirstWord(user.result.name)} */}
             </Typography>
             <Button
               variant="contained"
