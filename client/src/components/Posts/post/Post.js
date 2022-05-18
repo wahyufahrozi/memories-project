@@ -17,7 +17,7 @@ import { useHistory } from "react-router-dom";
 import { likePost, deletePost } from "../../../redux/actions/posts";
 import { Link } from "react-router-dom";
 import useStyles from "./styles";
-
+import "./style.css";
 const Post = ({ post, setCurrentId }) => {
   const dispatch = useDispatch();
   const classes = useStyles();
@@ -88,8 +88,7 @@ const Post = ({ post, setCurrentId }) => {
           {moment(post.createdAt).fromNow()}
         </Typography>
       </div>
-      {(user?.result?.googleId === post?.creator ||
-        user?.result?._id === post?.creator) && (
+      {user?.result?._id === post?.creator && (
         <div className={classes.overlay2}>
           <Button
             onClick={() => setCurrentId(post._id)}
@@ -115,7 +114,12 @@ const Post = ({ post, setCurrentId }) => {
           {post.title}
         </Typography>
         <CardContent>
-          <Typography variant="body2" color="textSecondary" component="p">
+          <Typography
+            variant="body2"
+            className="description"
+            color="textSecondary"
+            component="p"
+          >
             {post.message}
           </Typography>
         </CardContent>
@@ -130,8 +134,7 @@ const Post = ({ post, setCurrentId }) => {
         >
           <Likes />
         </Button>
-        {(user?.result?.googleId === post?.creator ||
-          user?.result?._id === post?.creator) && (
+        {user?.result?._id === post?.creator && (
           <Button
             size="small"
             color="secondary"

@@ -20,7 +20,7 @@ app.use("/posts", postRoutes);
 app.use("/user", userRoutes);
 
 app.get("/", (req, res) => {
-  res.send("APP IS RUNNG");
+  res.send = "APP IS RUNNING";
 });
 // const CONNECTION_URL =
 //   "mongodb+srv://admin:admin@cluster0.zfdny.mongodb.net/memories?retryWrites=true&w=majority";
@@ -35,3 +35,5 @@ mongoose
     app.listen(PORT, () => console.log(`server running on port ${PORT}`))
   )
   .catch((error) => console.log(error.message));
+
+// moongose.set("useFindAndModify", false);
